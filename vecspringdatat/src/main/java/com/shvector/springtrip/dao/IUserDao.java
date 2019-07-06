@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 public interface IUserDao extends Repository<Users,Integer> {
@@ -18,6 +19,7 @@ public interface IUserDao extends Repository<Users,Integer> {
 
     @Query(value = "insert into tb_users(username,userage)values(?,?)",nativeQuery = true)
     @Modifying
+    @Transactional
     void save(String username,Integer userage);
 
     @Query(value = "delete from tb_users where userid = ?",nativeQuery = true)

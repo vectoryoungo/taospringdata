@@ -27,7 +27,12 @@ public class Test {
 
         System.out.println("userList size " + usersList.size());
         System.out.println("content is " + usersList.get(0).getUserAge()+" " + usersList.get(0).getUserName());
-//        IUserDao.save("test",20);
+
+    }
+
+    @org.junit.Test
+    public void save() {
+        IUserDao.save("supertony",29);
     }
 }
 
