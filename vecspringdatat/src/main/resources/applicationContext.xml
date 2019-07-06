@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/data/jpa
+        http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--指定配置文件的位置-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+
+
+   <!-- &lt;!&ndash; 配置c3p0数据库连接池 &ndash;&gt;
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="jdbcUrl" value="${spring.datasource.url}"/>
+        <property name="driverClass" value="${spring.datasource.driver.class}"/>
+        <property name="user" value="${spring.datasource.username}"/>
+        <property name="password" value="${spring.datasource.password}"/>
+    </bean>-->
+    <!--配置druid数据源 关于更多的配置项 可以参考官方文档 <a src="https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8" > -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="driverClassName" value="${spring.datasource.driver.class}"></property>
+        <property name="url" value="${spring.datasource.url}"/>
+        <property name="username" value="${spring.datasource.username}"/>
+        <property name="password" value="${spring.datasource.password}"/>
+
+        <property name="initialSize" value="5"/>
+        <property name="minIdle" value="10"/>
+        <property name="maxActive" value="20"/>
+
+        <property name="maxWait" value="60000"/>
+
+        <property name="timeBetweenEvictionRunsMillis" value="2000"/>
+
+        <property name="minEvictableIdleTimeMillis" value="600000"/>
+        <property name="maxEvictableIdleTimeMillis" value="900000"/>
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource">
+        </property>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="database" value="MYSQL"></property>
+                <property name="generateDdl" value="true"></property>
+                <property name="showSql" value="true"></property>
+            </bean>
+        </property>
+        <property name="packagesToScan" value="com.shvector.springtrip.pojo">
+        </property>
+    </bean>
+
+    <!--config hibernate transaction manager -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+            <property name="entityManagerFactory" ref="entityManagerFactory"></property>
+    </bean>
+    <!--open annotation transaction support-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <!--config spring IOC annotation-->
+    <context:component-scan base-package="com.shvector.springtrip"/>
+    <!--scan dao package-->
+    <jpa:repositories base-package="com.shvector.springtrip.dao"/>
+</beans>
