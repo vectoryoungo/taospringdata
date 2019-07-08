@@ -9,7 +9,7 @@ import com.lmax.disruptor.EventHandler;
 public class MyTradeEventHandler implements EventHandler<MyTradeEvent> {
 
     public void onEvent(MyTradeEvent event, long sequence, boolean endOfBatch) throws Exception {
-        //撮合
+        //撮合逻辑需要在这里实现
         System.out.println(" 撮合进行..." + event.getUserId());
         event.getTxType();
         event.getBusinessType();
