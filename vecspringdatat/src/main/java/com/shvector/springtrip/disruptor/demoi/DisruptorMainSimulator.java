@@ -11,7 +11,10 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -28,32 +31,45 @@ public class DisruptorMainSimulator {
         RingBuffer<MyTradeEvent> ringBuffer = disruptor.start();
         MyTradeProducer myTradeProducer = new MyTradeProducer(ringBuffer);
 
+        long start = System.nanoTime();
+        List<MyInnerData> seller = new CopyOnWriteArrayList<MyInnerData>();
+        List<MyInnerData> buyer = new CopyOnWriteArrayList<MyInnerData>();
 
         for (int i=0;i<1000000;i++) {
-
             MyData myData = new MyData();
-            myData.setAmount(new BigDecimal(i));
-            if (i%2==0) {
-                myData.setBusinessType(2);
-                myData.setTxType(1);
-            }else {
-                myData.setBusinessType(1);
-                myData.setTxType(2);
-            }
-            myData.setOrderNo(UUID.randomUUID().toString());
-            int random = (int)(Math.random()*100+1);
-            myData.setPrice(new BigDecimal(random));
-            myData.setRelationId(i);
+            MyInnerData myInnerData = new MyInnerData();
+            myInnerData.setAmount(new BigDecimal(i));
 
-            myData.setUserId(Long.valueOf(i));
+            myInnerData.setTxType(1);
+            myInnerData.setOrderNo(UUID.randomUUID().toString());
+            int random = (int)(Math.random()*100+1);
+            myInnerData.setPrice(new BigDecimal(random));
+            myInnerData.setRelationId(i);
+
+            myInnerData.setUserId(Long.valueOf(i));
+
+            if (i%2==0) {
+                myInnerData.setBusinessType(2);
+                seller.add(myInnerData);
+            }else {
+                myInnerData.setBusinessType(1);
+                buyer.add(myInnerData);
+
+            }
+
+            myData.setBuyer(buyer);
+            myData.setSeller(seller);
             myTradeProducer.onData(myData);
+
             try {
                 Thread.sleep(1);// wait for task execute....
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println(" loop inner i is " + i);
         }
-
+        long estimatedTime = System.nanoTime() - start;
+        System.out.println(" it takes " + TimeUnit.NANOSECONDS.toSeconds(estimatedTime));
         disruptor.shutdown();
         ExecutorsUtils.shutdownAndAwaitTermination(executorService, 60, TimeUnit.SECONDS);
     }
