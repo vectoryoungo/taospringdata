@@ -1,6 +1,10 @@
 /**
  * @create 2019-07-08 15:21
  * @desc simulator
+ * 1000000
+ * this test use ArrayList takes 1506s
+ * use ArrayBlockingQueue takes 1356s
+ * use LinkedBlockingQueue takes 1279s
  **/
 package com.shvector.springtrip.disruptor.demoi;
 
@@ -12,11 +16,9 @@ import com.lmax.disruptor.dsl.ProducerType;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Queue;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class DisruptorMainSimulator {
 
@@ -31,8 +33,13 @@ public class DisruptorMainSimulator {
         MyTradeProducer myTradeProducer = new MyTradeProducer(ringBuffer);
 
         long start = System.nanoTime();
-        List<MyInnerData> seller = new CopyOnWriteArrayList<MyInnerData>();
-        List<MyInnerData> buyer = new CopyOnWriteArrayList<MyInnerData>();
+
+        Queue<MyInnerData> seller = new LinkedBlockingQueue<MyInnerData>(1024*512);
+        Queue<MyInnerData> buyer = new LinkedBlockingQueue<MyInnerData>(1024*512);
+        //Queue<MyInnerData> seller = new ArrayBlockingQueue<MyInnerData>(1024*512);
+        //Queue<MyInnerData> buyer = new ArrayBlockingQueue<MyInnerData>(1024*512);
+        //List<MyInnerData> seller = new CopyOnWriteArrayList<MyInnerData>();
+        //List<MyInnerData> buyer = new CopyOnWriteArrayList<MyInnerData>();
 
         for (int i=0;i<1000000;i++) {
             MyData myData = new MyData();

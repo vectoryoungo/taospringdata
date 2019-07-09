@@ -5,13 +5,17 @@
 package com.shvector.springtrip.disruptor.demoi;
 
 import java.util.List;
+import java.util.Queue;
 
 public class MyData {
 
-    private List<MyInnerData> seller;
-    private List<MyInnerData> buyer;
+    private Queue<MyInnerData> seller;
+    private Queue<MyInnerData> buyer;
 
-    public List<MyInnerData> getSeller() {
+    //private List<MyInnerData> seller;
+    //private List<MyInnerData> buyer;
+
+    /*public List<MyInnerData> getSeller() {
         return seller;
     }
 
@@ -24,6 +28,22 @@ public class MyData {
     }
 
     public void setBuyer(List<MyInnerData> buyer) {
+        this.buyer = buyer;
+    }*/
+
+    public Queue<MyInnerData> getSeller() {
+        return seller;
+    }
+
+    public void setSeller(Queue<MyInnerData> seller) {
+        this.seller = seller;
+    }
+
+    public Queue<MyInnerData> getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(Queue<MyInnerData> buyer) {
         this.buyer = buyer;
     }
 }
