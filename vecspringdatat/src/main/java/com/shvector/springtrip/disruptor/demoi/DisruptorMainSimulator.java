@@ -5,6 +5,10 @@
  * this test use ArrayList takes 1506s
  * use ArrayBlockingQueue takes 1356s
  * use LinkedBlockingQueue takes 1279s
+ *
+ * This constructor has been deprecated
+ * Disruptor<MyTradeEvent> disruptor = new Disruptor<MyTradeEvent>(new MyTradeEventFactory(),
+ * bufferSize, executorService, ProducerType.SINGLE, new YieldingWaitStrategy());
  **/
 package com.shvector.springtrip.disruptor.demoi;
 
@@ -13,6 +17,7 @@ import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
+import com.lmax.disruptor.util.DaemonThreadFactory;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -25,15 +30,12 @@ public class DisruptorMainSimulator {
     public static void main(String[] args) {
          ExecutorService executorService = Executors.newFixedThreadPool(4);
          int bufferSize = 1024 * 1024;
-        Disruptor<MyTradeEvent> disruptor = new Disruptor<MyTradeEvent>(new MyTradeEventFactory(),
-                bufferSize, executorService, ProducerType.SINGLE, new YieldingWaitStrategy());
-        disruptor.handleExceptionsWith(new IgnoreExceptionHandler());
+        Disruptor<MyTradeEvent> disruptor = new Disruptor<MyTradeEvent>(new MyTradeEventFactory(),bufferSize,DaemonThreadFactory.INSTANCE,ProducerType.SINGLE, new YieldingWaitStrategy());
+        disruptor.setDefaultExceptionHandler(new IgnoreExceptionHandler());
         disruptor.handleEventsWith(new MyTradeEventHandler());
         RingBuffer<MyTradeEvent> ringBuffer = disruptor.start();
         MyTradeProducer myTradeProducer = new MyTradeProducer(ringBuffer);
-
         long start = System.nanoTime();
-
         Queue<MyInnerData> seller = new LinkedBlockingQueue<MyInnerData>(1024*512);
         Queue<MyInnerData> buyer = new LinkedBlockingQueue<MyInnerData>(1024*512);
         //Queue<MyInnerData> seller = new ArrayBlockingQueue<MyInnerData>(1024*512);
@@ -56,10 +58,10 @@ public class DisruptorMainSimulator {
 
             if (i%2==0) {
                 myInnerData.setBusinessType(2);
-                seller.add(myInnerData);
+                seller.offer(myInnerData);
             }else {
                 myInnerData.setBusinessType(1);
-                buyer.add(myInnerData);
+                buyer.offer(myInnerData);
 
             }
 
