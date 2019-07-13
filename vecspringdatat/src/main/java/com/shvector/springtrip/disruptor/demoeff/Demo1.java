@@ -41,11 +41,12 @@ public class Demo1 {
         executors.submit(transProcessor);
         //如果存大多个消费者 那重复执行上面3行代码 把TradeTransactionInDBHandler换成其它消费者类
 
+        long start = System.nanoTime();
         Future<?> future=executors.submit(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
                 long seq;
-                for(int i=0;i<1000;i++){
+                for(int i=0;i<1000000;i++){
                     seq=ringBuffer.next();//占个坑 --ringBuffer一个可用区块
 
                     ringBuffer.get(seq).setPrice(Math.random()*9999);//给这个区块放入 数据  如果此处不理解，想想RingBuffer的结构图
@@ -59,6 +60,8 @@ public class Demo1 {
         Thread.sleep(1000);//等上1秒，等消费都处理完成
         transProcessor.halt();//通知事件(或者说消息)处理器 可以结束了（并不是马上结束!!!）
         executors.shutdown();//终止线程
+        long estimatedTime = System.nanoTime() - start;
+        System.out.println("pairs over it takes " + TimeUnit.NANOSECONDS.toSeconds(estimatedTime));
     }
 }
 
