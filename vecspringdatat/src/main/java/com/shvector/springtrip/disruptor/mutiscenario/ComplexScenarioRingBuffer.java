@@ -38,11 +38,11 @@ public class ComplexScenarioRingBuffer {
          */
 
         //顺序操作
-        /**
+
          disruptor.handleEventsWith(new Handler1()).
          handleEventsWith(new Handler2()).
          handleEventsWith(new Handler3());
-         */
+
 
         //六边形操作.
         /**
