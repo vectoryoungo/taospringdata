@@ -56,7 +56,7 @@ public class Demo1 {
                 return null;
             }
         });
-        future.get();//等待生产者结束
+        System.out.println(" future get is " + future.get());//等待生产者结束
         Thread.sleep(1000);//等上1秒，等消费都处理完成
         transProcessor.halt();//通知事件(或者说消息)处理器 可以结束了（并不是马上结束!!!）
         executors.shutdown();//终止线程

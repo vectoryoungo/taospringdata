@@ -8,10 +8,12 @@ import com.lmax.disruptor.BusySpinWaitStrategy;
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
+import com.lmax.disruptor.util.DaemonThreadFactory;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class ComplexScenarioRingBuffer {
 
@@ -26,7 +28,7 @@ public class ComplexScenarioRingBuffer {
             public Trade newInstance() {
                 return new Trade();
             }
-        }, bufferSize, executor, ProducerType.SINGLE, new BusySpinWaitStrategy());
+        }, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BusySpinWaitStrategy());
 
         //菱形操作
         /**
@@ -68,7 +70,7 @@ public class ComplexScenarioRingBuffer {
 
         disruptor.shutdown();
         executor.shutdown();
-        System.out.println("总耗时:"+(System.currentTimeMillis()-beginTime));
+        System.out.println("总耗时:"+ TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()-beginTime));
     }
 }
 
