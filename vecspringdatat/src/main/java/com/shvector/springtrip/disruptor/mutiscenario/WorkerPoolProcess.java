@@ -36,7 +36,7 @@ public class WorkerPoolProcess {
         //下面这个生产8个数据
         for(int i=0;i<8;i++){
             long seq=ringBuffer.next();
-            ringBuffer.get(seq).setPrice(Math.random()*9999);
+            //ringBuffer.get(seq).setPrice(Math.random()*9999);
             ringBuffer.publish(seq);
         }
 

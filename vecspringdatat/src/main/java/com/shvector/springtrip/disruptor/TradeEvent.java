@@ -5,6 +5,7 @@
 package com.shvector.springtrip.disruptor;
 
 import java.math.BigDecimal;
+import java.util.Queue;
 
 public class TradeEvent {
 
@@ -15,6 +16,8 @@ public class TradeEvent {
     private BigDecimal  amount;             // 数量：from req
     private Integer     businessType;       // 买卖类型：买-1/卖-2
     private Integer     txType;             // 交易类型：市价交易-1/限价交易-2
+    private Queue<TradeEvent> seller;
+    private Queue<TradeEvent> buyer;
 
     public String getOrderNo() {
         return orderNo;

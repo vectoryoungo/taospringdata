@@ -7,7 +7,9 @@ package com.shvector.springtrip.disruptor.mutiscenario;
 import com.lmax.disruptor.EventTranslator;
 import com.lmax.disruptor.dsl.Disruptor;
 
+import java.math.BigDecimal;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
 public class TradePublisher implements Runnable {
@@ -34,17 +36,27 @@ public class TradePublisher implements Runnable {
 
 class TradeEventTranslator implements EventTranslator<Trade> {
 
-    private Random random=new Random();
-
     @Override
     public void translateTo(Trade event, long sequence) {
         this.generateTrade(event);
     }
 
     private Trade generateTrade(Trade trade){
-        trade.setPrice(random.nextDouble()*9999);
+        Random random=new Random();
+        int modNum = random.nextInt(1000) % 2;
+        trade.setOrderNo(UUID.randomUUID().toString());
+        //trade.setPrice(new BigDecimal(String.valueOf(random.nextInt())));
+        trade.setUserId(random.nextLong());
+        trade.setAmount(new BigDecimal(random.nextInt(50)));
+        if (modNum ==0) {
+            trade.setBusinessType(1);
+        }else {
+            trade.setBusinessType(2);
+        }
+        trade.setRelationId(random.nextInt());
+        trade.setTxType(1);
+        trade.setPrice(new BigDecimal((int)(Math.random() * 1000000)));
         return trade;
     }
-
 }
 

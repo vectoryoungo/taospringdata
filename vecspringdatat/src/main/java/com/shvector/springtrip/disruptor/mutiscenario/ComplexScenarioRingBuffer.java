@@ -21,7 +21,7 @@ public class ComplexScenarioRingBuffer {
 
         long beginTime=System.currentTimeMillis();
         int bufferSize=1024;
-        ExecutorService executor= Executors.newFixedThreadPool(8);
+        ExecutorService executor= Executors.newFixedThreadPool(4);
 
         Disruptor<Trade> disruptor = new Disruptor<Trade>(new EventFactory<Trade>() {
             @Override
@@ -41,11 +41,11 @@ public class ComplexScenarioRingBuffer {
 
         //顺序操作
 
-         disruptor.handleEventsWith(new Handler1()).
-         handleEventsWith(new Handler2()).
-         handleEventsWith(new Handler3());
-
-
+         //disruptor.handleEventsWith(new Handler1()).
+         //handleEventsWith(new Handler2()).
+         //handleEventsWith(new Handler3());
+        disruptor.handleEventsWith(new Handler1()).
+                handleEventsWith(new Handler2());
         //六边形操作.
         /**
          Handler1 h1 = new Handler1();
@@ -73,4 +73,5 @@ public class ComplexScenarioRingBuffer {
         System.out.println("总耗时:"+ TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()-beginTime));
     }
 }
+
 
