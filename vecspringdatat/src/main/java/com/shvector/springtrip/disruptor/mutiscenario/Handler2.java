@@ -56,6 +56,7 @@ public class Handler2 implements EventHandler<Trade> {
                         sellerQueue.take();//remove the match
                         System.out.println("buy not buy enough need more ");
                         System.out.println(buyAmount.subtract(sellAmount));
+                        System.out.println("¥¥¥¥¥¥¥¥¥");
                     }else if (buyAmount.compareTo(sellAmount) < 0){
                         //buy part of goods regenerate goods
                         System.out.println("$$$$$$$$$$");
@@ -66,6 +67,7 @@ public class Handler2 implements EventHandler<Trade> {
                         System.out.println("sell amount ");
                         System.out.println(sellAmount);
                         System.out.println("sell part of goods regenerate goods need sell remain " + (sellAmount.subtract(buyAmount)));
+                        System.out.println("$$$$$$$$$$");
                     }else {
                         // just match perfect buy 1 sell 1
                         System.out.println("**************");
@@ -76,6 +78,7 @@ public class Handler2 implements EventHandler<Trade> {
                         System.out.println("sell amount ");
                         System.out.println(sellAmount);
                         System.out.println("perfect match");
+                        System.out.println("**************");
                     }
                 }
             }
