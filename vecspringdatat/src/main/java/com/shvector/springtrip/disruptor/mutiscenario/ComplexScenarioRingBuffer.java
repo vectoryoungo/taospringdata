@@ -45,7 +45,7 @@ public class ComplexScenarioRingBuffer {
          //handleEventsWith(new Handler2()).
          //handleEventsWith(new Handler3());
         disruptor.handleEventsWith(new Handler1()).
-                handleEventsWith(new Handler2());
+                then(new Handler2());
         //六边形操作.
         /**
          Handler1 h1 = new Handler1();
