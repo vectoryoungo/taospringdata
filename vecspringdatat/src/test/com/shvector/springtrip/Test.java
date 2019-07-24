@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -55,6 +56,26 @@ public class Test {
         System.out.println("all data count " + usersPage.getTotalElements());
         System.out.println("all pages count " + usersPage.getTotalPages());
         List<Users> usersList = usersPage.getContent();
+        for (Users users:usersList) {
+            System.out.println(users);
+        }
+    }
+
+    @org.junit.Test
+    public void sortRecord() {
+        Sort sort = new Sort(Sort.Direction.DESC,"userId");
+        List<Users> list = (List<Users>) userDaoExtendsPagingAndSortingRepository.findAll(sort);
+        for (Users users:list){
+            System.out.println(users);
+        }
+    }
+
+    @org.junit.Test
+    public void multicolumnSort() {
+        Sort.Order order = new Sort.Order(Sort.Direction.DESC,"userAge");
+        Sort.Order multi = new Sort.Order(Sort.Direction.ASC,"userName");
+        Sort sort = new Sort(order,multi);
+        List<Users> usersList = (List<Users>) userDaoExtendsPagingAndSortingRepository.findAll(sort);
         for (Users users:usersList) {
             System.out.println(users);
         }
