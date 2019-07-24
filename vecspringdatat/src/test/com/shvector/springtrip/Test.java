@@ -104,5 +104,22 @@ public class Test {
             System.out.println(users);
         }
     }
+
+    @org.junit.Test
+    public void JpaSpecificationWithMany() {
+        Specification<Users> specification = new Specification<Users>() {
+            @Override
+            public Predicate toPredicate(Root<Users> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Predicate predicate = criteriaBuilder.or(criteriaBuilder.equal(root.get("userName"),"kawasaki"),criteriaBuilder.equal(root.get("userAge"),29));
+                return predicate;
+            }
+        };
+
+        List<Users> usersList = userDaoExtendsJpaSpecificationExecutor.findAll(specification);
+
+        for (Users users:usersList) {
+            System.out.println(users);
+        }
+    }
 }
 
