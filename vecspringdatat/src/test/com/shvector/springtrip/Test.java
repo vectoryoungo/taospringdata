@@ -34,5 +34,10 @@ public class Test {
     public void save() {
         IUserDao.save("supertony",29);
     }
+
+    @org.junit.Test
+    public void delete() {
+        IUserDao.delete(1);
+    }
 }
 
