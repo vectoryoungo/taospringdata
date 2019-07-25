@@ -7,6 +7,7 @@ package com.shvector.springtrip;
 import com.shvector.springtrip.dao.IUserDao;
 import com.shvector.springtrip.dao.IUserDaoExtendsJpaSpecificationExecutor;
 import com.shvector.springtrip.dao.IUserDaoExtendsPagingAndSortingRepository;
+import com.shvector.springtrip.dao.IUserDaoWithRepository;
 import com.shvector.springtrip.pojo.Users;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class Test {
     private IUserDaoExtendsPagingAndSortingRepository userDaoExtendsPagingAndSortingRepository;
     @Autowired
     private IUserDaoExtendsJpaSpecificationExecutor userDaoExtendsJpaSpecificationExecutor;
+    @Autowired
+    private IUserDaoWithRepository iUserDaoWithRepository;
 
 
     @org.junit.Test
@@ -120,6 +123,12 @@ public class Test {
         for (Users users:usersList) {
             System.out.println(users);
         }
+    }
+
+    @org.junit.Test
+    public void userRepositoryWithDaoTest() {
+        Users users = iUserDaoWithRepository.findUserById(5);
+        System.out.println(users);
     }
 }
 
