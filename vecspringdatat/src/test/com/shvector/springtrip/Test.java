@@ -18,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -145,6 +147,38 @@ public class Test {
     public void redisSingleGetTest() {
         String cache = (String) redisTemplate.opsForValue().get("tonyMark");
         System.out.println(" cache is " + cache);
+    }
+
+    @org.junit.Test
+    public void objectRedisTest() {
+        Users users = new Users();
+        users.setUserAge(23);
+        users.setUserId(10);
+        users.setUserName("Martin");
+        redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
+        redisTemplate.opsForValue().set("users",users);
+    }
+
+    @org.junit.Test
+    public void objectRedisReadTest() {
+        Users object = (Users) redisTemplate.opsForValue().get("users");
+        System.out.println(object);
+    }
+
+    @org.junit.Test
+    public void testWithJackson() {
+        Users users = new Users();
+        users.setUserName("fucker");
+        users.setUserId(99);
+        users.setUserAge(88);
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<Users>(Users.class));
+        redisTemplate.opsForValue().set("userjson",users);
+    }
+
+    @org.junit.Test
+    public void testWithJacksonQuery() {
+        String str = (String) redisTemplate.opsForValue().get("userjson");
+        System.out.println(str);
     }
 }
 
