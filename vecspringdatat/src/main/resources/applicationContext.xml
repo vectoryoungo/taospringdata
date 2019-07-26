@@ -17,16 +17,64 @@
         http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <!--指定配置文件的位置-->
-    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <!--context:property-placeholder location="classpath:jdbc.properties"/>-->
 
+    <!-- 将多个配置文件读取到容器中，交给Spring管理 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:jdbc.properties</value>
+                <value>classpath:redis.properties</value>
+            </list>
+        </property>
+    </bean>
 
-   <!-- &lt;!&ndash; 配置c3p0数据库连接池 &ndash;&gt;
-    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-        <property name="jdbcUrl" value="${spring.datasource.url}"/>
-        <property name="driverClass" value="${spring.datasource.driver.class}"/>
-        <property name="user" value="${spring.datasource.username}"/>
-        <property name="password" value="${spring.datasource.password}"/>
+    <!--Jedis连接池-->
+    <bean id="poolConfifg" class="redis.clients.jedis.JedisPoolConfig">
+            <property name="maxTotal" value="${redis.pool.maxTotal}"></property>
+            <property name="maxIdle" value="${redis.pool.maxIdle}"></property>
+            <property name="minIdle" value="${redis.pool.minIdle}"></property>
+    </bean>
+
+    <!--redis single server 172.16.30.213:6379-->
+    <!--redis cluster config-->
+    <!--<bean id="redisClusterConfig" class="org.springframework.data.redis.connection.RedisClusterConfiguration">
+        <constructor-arg name="clusterNodes">
+            <list>
+                <value>192.168.2.124:7001</value>
+                <value>192.168.2.124:7001</value>
+                <value>192.168.2.124:7001</value>
+                <value>192.168.2.124:7001</value>
+            </list>
+        </constructor-arg>
     </bean>-->
+
+    <!--jedis connection factory-->
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+            <property name="hostName" value="${redis.conn.hostName}"></property>
+            <property name="port" value="${redis.conn.port}"></property>
+            <property name="poolConfig" ref="poolConfifg"></property>
+    </bean>
+
+    <!--redis template object and it is the same as JDBCTemplate -->
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="connectionFactory" ref="jedisConnectionFactory"></property>
+        <property name="keySerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
+        </property>
+        <property name="valueSerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
+        </property>
+    </bean>
+
+
+    <!-- &lt;!&ndash; 配置c3p0数据库连接池 &ndash;&gt;
+     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+         <property name="jdbcUrl" value="${spring.datasource.url}"/>
+         <property name="driverClass" value="${spring.datasource.driver.class}"/>
+         <property name="user" value="${spring.datasource.username}"/>
+         <property name="password" value="${spring.datasource.password}"/>
+     </bean>-->
     <!--配置druid数据源 关于更多的配置项 可以参考官方文档 <a src="https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8" > -->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <property name="driverClassName" value="${spring.datasource.driver.class}"></property>

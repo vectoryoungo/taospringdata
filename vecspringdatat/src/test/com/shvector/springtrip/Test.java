@@ -16,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -37,6 +39,8 @@ public class Test {
     private IUserDaoExtendsJpaSpecificationExecutor userDaoExtendsJpaSpecificationExecutor;
     @Autowired
     private IUserDaoWithRepository iUserDaoWithRepository;
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
 
 
     @org.junit.Test
@@ -129,6 +133,18 @@ public class Test {
     public void userRepositoryWithDaoTest() {
         Users users = iUserDaoWithRepository.findUserById(5);
         System.out.println(users);
+    }
+
+    @org.junit.Test
+    public void redisSingleSetTest(){
+        ValueOperations<String,Object> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set("tonyMark","2147496");
+    }
+
+    @org.junit.Test
+    public void redisSingleGetTest() {
+        String cache = (String) redisTemplate.opsForValue().get("tonyMark");
+        System.out.println(" cache is " + cache);
     }
 }
 
